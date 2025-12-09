@@ -1,8 +1,12 @@
 import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
+import path from 'path';
+import {fileURLToPath} from 'url';
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const config: Config = {
   title: 'Physical AI & Humanoid Robotics',
@@ -49,7 +53,7 @@ const config: Config = {
         },
         blog: false, // Disable blog
         theme: {
-          customCss: './src/css/custom.css',
+          customCss: path.resolve(__dirname, 'src', 'css', 'custom.css'),
         },
       } satisfies Preset.Options,
     ],
