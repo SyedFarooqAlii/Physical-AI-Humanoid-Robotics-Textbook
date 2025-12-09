@@ -29,7 +29,6 @@ jobs:
         with:
           node-version: 20.x
           cache: 'npm'
-          cache-dependency-path: humanoid-robotics-book/package-lock.json
       - name: Install dependencies
         run: |
           cd humanoid-robotics-book
