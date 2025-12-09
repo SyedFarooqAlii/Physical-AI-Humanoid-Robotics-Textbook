@@ -1,1 +1,1 @@
-"# Humanoid-robotics-bbok-hackathon" 
+"# Humanoid-robotics-book-hackathon" 
