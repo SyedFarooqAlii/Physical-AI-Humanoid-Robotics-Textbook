@@ -31,7 +31,7 @@ jobs:
       - name: Install dependencies
         run: |
           cd humanoid-robotics-book
-          npm ci
+          npm install
       - name: Build
         run: |
           cd humanoid-robotics-book
