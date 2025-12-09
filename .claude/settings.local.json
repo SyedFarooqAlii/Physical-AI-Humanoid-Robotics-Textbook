@@ -1,10 +1,14 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npx docusaurus clear)",
-      "Bash(npx docusaurus start --port 3001)",
-      "Bash(dir docs /s /b)",
-      "Bash(find docs -name \"*.md\" -exec grep -L \"sidebar_label\\|sidebar_position\" {} ;)"
+      "Bash(git add .github/workflows/deploy.yml)",
+      "Bash(git commit -m \"Fix GitHub Actions workflow paths for Docusaurus project in subdirectory\n\n- Update npm commands to run in humanoid-robotics-book subdirectory\n- Update artifact path to point to humanoid-robotics-book/build\n- This should resolve the GitHub Pages deployment issue\")",
+      "Bash(gh repo view)",
+      "Bash(git commit -m \"Remove cache-dependency-path to fix cache resolution issue\n\n- The cache-dependency-path was causing ''Some specified paths were not resolved'' error\n- Keeping the cache but removing the path should allow npm to work in the subdirectory after checkout\")",
+      "Bash(git push origin main)",
+      "Bash(ls -la humanoid-robotics-book/package*.json)",
+      "Bash(git commit -m \"Use npm install instead of npm ci to avoid lockfile strictness issues\n\n- npm ci requires a valid package-lock.json with specific format\n- Using npm install is more forgiving and should work with the existing lockfile\n- This should resolve the EUSAGE error during dependency installation\")",
+      "Bash(git commit -m \"Fix custom CSS path resolution in docusaurus config\n\n- Use require.resolve() to properly resolve the path to custom.css\n- This should fix the ''Can''t resolve'' error during build\")"
     ],
     "deny": [],
     "ask": []
