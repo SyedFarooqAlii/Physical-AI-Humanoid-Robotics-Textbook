@@ -1,0 +1,362 @@
+# ROS 2 Interface Contracts for Physical AI & Humanoid Robotics
+
+openapi: 3.0.0
+info:
+  title: ROS 2 Interfaces for Humanoid Robotics
+  description: API contracts defining ROS 2 topics, services, and actions for the Physical AI & Humanoid Robotics book
+  version: 1.0.0
+
+# Define ROS 2 message types and interfaces
+components:
+  schemas:
+    JointState:
+      type: object
+      properties:
+        name:
+          type: array
+          items:
+            type: string
+        position:
+          type: array
+          items:
+            type: number
+            format: float64
+        velocity:
+          type: array
+          items:
+            type: number
+            format: float64
+        effort:
+          type: array
+          items:
+            type: number
+            format: float64
+      required:
+        - name
+        - position
+
+    Imu:
+      type: object
+      properties:
+        angular_velocity:
+          type: object
+          properties:
+            x:
+              type: number
+              format: float64
+            y:
+              type: number
+              format: float64
+            z:
+              type: number
+              format: float64
+        linear_acceleration:
+          type: object
+          properties:
+            x:
+              type: number
+              format: float64
+            y:
+              type: number
+              format: float64
+            z:
+              type: number
+              format: float64
+        orientation:
+          type: object
+          properties:
+            x:
+              type: number
+              format: float64
+            y:
+              type: number
+              format: float64
+            z:
+              type: number
+              format: float64
+            w:
+              type: number
+              format: float64
+
+    LaserScan:
+      type: object
+      properties:
+        angle_min:
+          type: number
+          format: float32
+        angle_max:
+          type: number
+          format: float32
+        angle_increment:
+          type: number
+          format: float32
+        time_increment:
+          type: number
+          format: float32
+        scan_time:
+          type: number
+          format: float32
+        range_min:
+          type: number
+          format: float32
+        range_max:
+          type: number
+          format: float32
+        ranges:
+          type: array
+          items:
+            type: number
+            format: float32
+        intensities:
+          type: array
+          items:
+            type: number
+            format: float32
+
+    Twist:
+      type: object
+      properties:
+        linear:
+          type: object
+          properties:
+            x:
+              type: number
+              format: float64
+            y:
+              type: number
+              format: float64
+            z:
+              type: number
+              format: float64
+        angular:
+          type: object
+          properties:
+            x:
+              type: number
+              format: float64
+            y:
+              type: number
+              format: float64
+            z:
+              type: number
+              format: float64
+
+# Define ROS 2 topics
+ros2_topics:
+  /joint_states:
+    type: publisher
+    message_type: sensor_msgs/JointState
+    description: Joint position, velocity, and effort feedback from robot
+    qos_profile:
+      reliability: reliable
+      durability: volatile
+      history: keep_last
+      depth: 1
+
+  /imu/data:
+    type: publisher
+    message_type: sensor_msgs/Imu
+    description: Inertial measurement unit data for robot orientation and acceleration
+    qos_profile:
+      reliability: reliable
+      durability: volatile
+      history: keep_last
+      depth: 10
+
+  /scan:
+    type: publisher
+    message_type: sensor_msgs/LaserScan
+    description: 2D laser scan data from LIDAR sensor
+    qos_profile:
+      reliability: reliable
+      durability: volatile
+      history: keep_last
+      depth: 10
+
+  /cmd_vel:
+    type: subscriber
+    message_type: geometry_msgs/Twist
+    description: Velocity commands for robot base movement
+    qos_profile:
+      reliability: reliable
+      durability: volatile
+      history: keep_last
+      depth: 1
+
+  /tf:
+    type: publisher
+    message_type: tf2_msgs/TFMessage
+    description: Transform tree for coordinate frame relationships
+    qos_profile:
+      reliability: reliable
+      durability: volatile
+      history: keep_last
+      depth: 100
+
+  /tf_static:
+    type: publisher
+    message_type: tf2_msgs/TFMessage
+    description: Static transform tree for fixed coordinate relationships
+    qos_profile:
+      reliability: reliable
+      durability: transient_local
+      history: keep_last
+      depth: 100
+
+# Define ROS 2 services
+ros2_services:
+  /get_joint_positions:
+    type: server
+    request_type: std_srvs/Empty
+    response_type: control_msgs/JointTrajectoryControllerState
+    description: Get current joint positions of the robot
+    timeout: 5000
+
+  /set_control_mode:
+    type: server
+    request_type: std_msgs/String
+    response_type: std_srvs/Trigger
+    description: Set control mode (position, velocity, effort)
+    timeout: 3000
+
+  /calibrate_sensors:
+    type: server
+    request_type: std_srvs/Trigger
+    response_type: std_srvs/Trigger
+    description: Calibrate all robot sensors
+    timeout: 10000
+
+# Define ROS 2 actions
+ros2_actions:
+  /follow_joint_trajectory:
+    type: server
+    action_type: control_msgs/FollowJointTrajectory
+    description: Execute a joint trajectory with precise timing
+    timeout: 60000
+
+  /move_base:
+    type: server
+    action_type: nav2_msgs/NavigateToPose
+    description: Navigate robot to specified pose
+    timeout: 120000
+
+  /pick_object:
+    type: server
+    action_type: manipulation_msgs/PickupObject
+    description: Pick up an object with robot manipulator
+    timeout: 30000
+
+# Module-specific interfaces
+
+# Module 1: The Robotic Nervous System (ROS 2)
+module_1_interfaces:
+  sensor_processor:
+    topics:
+      - /sensor_raw
+      - /sensor_processed
+    services:
+      - /calibrate_sensor
+    actions:
+      - /process_sensor_stream
+
+  joint_controller:
+    topics:
+      - /joint_commands
+      - /joint_feedback
+    services:
+      - /switch_control_mode
+    actions:
+      - /execute_trajectory
+
+  state_estimator:
+    topics:
+      - /robot_pose
+      - /robot_velocity
+    services:
+      - /reset_estimator
+    actions:
+      - /estimate_state
+
+# Module 2: The Digital Twin (Gazebo & Unity)
+module_2_interfaces:
+  gazebo_ros_bridge:
+    topics:
+      - /gazebo/model_states
+      - /gazebo/link_states
+    services:
+      - /gazebo/get_model_state
+      - /gazebo/set_model_state
+      - /gazebo/reset_simulation
+    actions:
+      - /gazebo/spawn_model
+
+  unity_ros_bridge:
+    topics:
+      - /unity/robot_state
+      - /unity/user_input
+      - /unity/interaction_events
+    services:
+      - /unity/load_scene
+      - /unity/set_visualization_mode
+    actions:
+      - /unity/teleop_command
+
+# Module 3: The AI-Robot Brain (NVIDIA Isaac)
+module_3_interfaces:
+  isaac_ros_detection:
+    topics:
+      - /isaac/detections
+      - /isaac/classifications
+    services:
+      - /isaac/relocalize
+      - /isaac/build_map
+    actions:
+      - /isaac/navigate_to_pose
+
+  cognitive_controller:
+    topics:
+      - /ai/intentions
+      - /ai/task_status
+      - /ai/context_state
+    services:
+      - /ai/plan_task
+      - /ai/query_context
+    actions:
+      - /ai/execute_behavior
+
+# Module 4: Vision-Language-Action (VLA)
+module_4_interfaces:
+  vlm_interpreter:
+    topics:
+      - /vlm/understanding
+      - /speech/text
+      - /commands/grounded
+    services:
+      - /vlm/query
+      - /speech/recognize
+    actions:
+      - /vlm/execute_command
+
+  vla_executor:
+    topics:
+      - /vla/actions
+      - /actions/trajectory
+      - /execution/feedback
+    services:
+      - /vla/generate_action
+      - /actions/validate
+    actions:
+      - /vla/execute_task
+
+# Capstone: Autonomous Humanoid interfaces
+capstone_interfaces:
+  humanoid_coordinator:
+    topics:
+      - /humanoid/intentions
+      - /capstone/status
+      - /safety/monitoring
+    services:
+      - /capstone/execute_command
+      - /humanoid/ready
+    actions:
+      - /capstone/autonomous_task
