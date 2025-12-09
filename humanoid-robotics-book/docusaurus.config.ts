@@ -49,7 +49,7 @@ const config: Config = {
         },
         blog: false, // Disable blog
         theme: {
-          customCss: './src/css/custom.css',
+          customCss: require.resolve('./src/css/custom.css'),
         },
       } satisfies Preset.Options,
     ],
