@@ -48,7 +48,9 @@ const config: Config = {
             'https://github.com/your-org/humanoid-robotics-book',
         },
         blog: false, // Disable blog
-        theme: {},
+        theme: {
+          customCss: require.resolve('./src/css/custom.css'),
+        },
       } satisfies Preset.Options,
     ],
   ],
